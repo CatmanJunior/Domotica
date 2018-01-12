@@ -20,7 +20,7 @@ def loadImages(*args):
 #images
 iLAMP = loadImages("lamp_on","lamp_off")
 iWASH = loadImages("wash", "wash_ready", "wash_working","wash_done")
-iPLANT = loadImages("plant", "give_water", "water_status")
+iPLANT = loadImages("plant", "give_water", "water_status", "water_status_low","water_status_middle","water_status_full")
 iSOUND = loadImages("sound")
 iWINDOW = loadImages("window_open", "window_closed")
 
@@ -133,7 +133,13 @@ class Plant(Module):
 	# 	self.state = sta
 
 	def drawMenu(self):
-		window.blit(self.image[2],(self.loc[0]+SQUARE+BORDER,self.loc[1]+SQUARE/4))	
+		if int(self.state) <= 30:
+			window.blit(self.image[3],(self.loc[0]+SQUARE+BORDER*2,self.loc[1]))	
+		elif int(self.state) <= 50:
+			window.blit(self.image[4],(self.loc[0]+SQUARE+BORDER*2,self.loc[1]))	
+		else:
+			window.blit(self.image[5],(self.loc[0]+SQUARE+BORDER*2,self.loc[1]))	
+	
 		window.blit(self.image[1],(self.loc[0],self.loc[1]+SQUARE+BORDER*2))
 		if checkButton(self.loc[0],self.loc[1]+SQUARE+BORDER*2,self.loc[0]+32,self.loc[1]+SQUARE+BORDER*2+32):
 			print ("Watering")
@@ -248,12 +254,17 @@ pygame.display.set_caption(TITLE)
 clock = pygame.time.Clock()
 gameLoop = True
 
+pygame.time.set_timer(pygame.USEREVENT, 3000)
 refresh()
 
 while gameLoop:
 	for event in pygame.event.get():
 		if (event.type==pygame.QUIT):
 			gameLoop = False
+		if event.type == pygame.USEREVENT:
+			t = threading.Thread(target=checkState)
+			threads.append(t)
+			t.start()
 #INTERFACE YES YES
 	window.fill(WHITE)
 	text_to_screen(window, "Home Destroyinator 2000", title_x, title_y, size = 20)
@@ -263,9 +274,6 @@ while gameLoop:
 	if checkButton(refresh_x,refresh_y,refresh_x + 50,refresh_y + 50):
 		modules[:] = []
 		refresh()
-	pygame.draw.rect(window,LIGHT_BLUE,(refresh_x + 100,refresh_y,50,50))
-	if checkButton(refresh_x + 100,refresh_y,refresh_x + 150,refresh_y + 50):
-		checkState()
 	
 	if (len(modules) != 0):		
 
