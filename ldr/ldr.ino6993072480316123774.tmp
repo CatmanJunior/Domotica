@@ -126,7 +126,7 @@ void setup(void) {
 
 
   server.on("/state", []() {
-    server.send(200, "text/plain", String(state));
+    server.send(200, "text/plain", String(state);
   });
 
   server.onNotFound(handleNotFound);

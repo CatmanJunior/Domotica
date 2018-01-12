@@ -5,8 +5,8 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <ArduinoOTA.h>
-const char* ssid = "Ziggo78F5D45";
-const char* password = "Sx7phx8fnkeP";
+const char* ssid = "test";
+const char* password = "testtest";
 
 ESP8266WebServer server(80);
 
@@ -23,7 +23,7 @@ bool state = 0;
 int brightness = 0;    // how bright the LED is
 int fadeAmount = 50;   // how many points to fade the LED by
 const long interval = 1000;
-
+int  sensorValue;
 String serialString = "hello from esp8266!\n";
 
 String bl = "\n";
@@ -125,9 +125,9 @@ void setup(void) {
 
   
   server.on("/state", []() {
-    if (state == true) server.send(200, "text/plain", "true");
-    if (state == false) server.send(200, "text/plain", "false");
-  });
+  server.send(200, "text/plain", String(sensorValue));
+    
+   });
 
   server.onNotFound(handleNotFound);
 
@@ -139,7 +139,7 @@ void loop(void) {
   server.handleClient();
   ArduinoOTA.handle();
 
-  int  sensorValue = analogRead(sensorp);
+  sensorValue = analogRead(sensorp)/10;
   Serial.println(sensorValue);
   if (sensorValue < 30) ledb.setPixelColor(0, leda.Color(255,0,0)); // Moderately bright green color.
 else   if (sensorValue < 50) ledb.setPixelColor(0, leda.Color(170,0,100)); // Moderately bright green color.

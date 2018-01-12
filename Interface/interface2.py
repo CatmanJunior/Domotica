@@ -186,7 +186,7 @@ def text_to_screen(screen, text, x, y, size = 20,
 def findModule(a, b, timeOut):
 	for i in range(a, b):
 
-		addr = "192.168.178." +  str(i)
+		addr = "192.168.15." +  str(i)
 		iplist = []
 		for m in modules:
 			iplist.append(m.ip)
